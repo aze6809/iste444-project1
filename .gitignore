@@ -6,3 +6,5 @@ memory_hog
 memory_hog_leak
 *.o
 a.out
+
+cleanup.sh
