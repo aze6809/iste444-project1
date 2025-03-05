@@ -8,3 +8,4 @@ memory_hog_leak
 a.out
 
 cleanup.sh
+init.sh
