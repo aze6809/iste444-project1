@@ -2,6 +2,7 @@
 
 # Closes all of the running programs that are running
 cleanup() {
+    echo ""
     echo "Cleaning up..."
     kill $BANDWIDTH_PID $BURST_PID $CPU_PID $DISK_PID $MEMORY_PID $LEAK_PID 
     exit 0
@@ -115,7 +116,7 @@ network_bandwidth_utilization &
 hard_disk_access_rates &
 hard_disk_utilization &
 
-sleep 3
+sleep 1
 echo ""
 echo "Monitoring started. Press Ctrl+C to stop."
 wait
