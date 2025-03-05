@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Closes all of the running programs that are running
+# Closes all of the running programs that are running.
 cleanup() {
     echo ""
     echo "Cleaning up..."
@@ -9,7 +9,7 @@ cleanup() {
 }
 trap cleanup EXIT
 
-# Compile c programs
+# Compile c programs.
 compile_programs(){
     echo "Compiling Programs ..."
 
@@ -21,7 +21,7 @@ compile_programs(){
     gcc memory_hog_leak.c -o memory_hog_leak
 }
 
-# Start all of the files in the background
+# Start all of the files in the background.
 start_programs(){
     echo "Starting Programs ..."
     echo ""
@@ -36,11 +36,11 @@ start_programs(){
 
     ./cpu_hog 8.8.8.8 &
     CPU_PID=$!
-    echo "cpu_hop : $CPU_PID"
+    echo "cpu_hog : $CPU_PID"
 
     ./disk_hog 8.8.8.8 &
     DISK_PID=$!
-    echo "disk_hop : $DISK_PID"
+    echo "disk_hog : $DISK_PID"
 
     ./memory_hog 8.8.8.8 &
     MEMORY_PID=$!
@@ -58,33 +58,37 @@ process_level_metrics(){
     # When was this function called, used to get the elapsed time.
     start_time=$(date +%s)
 
-    # Header of the file
-    echo "Time,APM 1 CPU,APM 1 Memory,APM 2 CPU,APM 2 Memory,APM 3 CPU,APM 3 Memory,APM 4 CPU,APM 4 Memory,APM 5 CPU,APM 5 Memory,APM 6 CPU,APM 6 Memory" > process_metrics.csv
-    while true; do
+    while true
+    do
         # Since this while loop runs every 5 seconds, elapsed time be += 5 every time.
         current_time=$(date +%s)
         elapsed_time=$(($current_time - $start_time))
 
+        # Get the cpu and mem used for each process with the process id and append to the csv.
         apm1_cpu=$(ps -p $BANDWIDTH_PID -o %cpu=)
         apm1_mem=$(ps -p $BANDWIDTH_PID -o %mem=)
+        echo "$elapsed_time,$apm1_cpu,$apm1_mem" >> bandwidth_hog_metrics.csv
 
         apm2_cpu=$(ps -p $BURST_PID -o %cpu=)
         apm2_mem=$(ps -p $BURST_PID -o %mem=)
+        echo "$elapsed_time,$apm2_cpu,$apm2_mem" >> bandwidth_hog_burst_metrics.csv
 
         apm3_cpu=$(ps -p $CPU_PID -o %cpu=)
         apm3_mem=$(ps -p $CPU_PID -o %mem=)
+        echo "$elapsed_time,$apm3_cpu,$apm3_mem" >> cpu_hog_metrics.csv
 
         apm4_cpu=$(ps -p $DISK_PID -o %cpu=)
         apm4_mem=$(ps -p $DISK_PID -o %mem=)
+        echo "$elapsed_time,$apm4_cpu,$apm4_mem" >> disk_hog_metrics.csv
 
         apm5_cpu=$(ps -p $MEMORY_PID -o %cpu=)
         apm5_mem=$(ps -p $MEMORY_PID -o %mem=)
+        echo "$elapsed_time,$apm5_cpu,$apm5_mem" >> memory_hog_metrics.csv
 
         apm6_cpu=$(ps -p $LEAK_PID -o %cpu=)
         apm6_mem=$(ps -p $LEAK_PID -o %mem=)
+        echo "$elapsed_time,$apm6_cpu,$apm6_mem" >> memory_hog_leak_metrics.csv
 
-        # Append to the csv
-        echo "$elapsed_time,$apm1_cpu,$apm1_mem,$apm2_cpu,$apm2_mem,$apm3_cpu,$apm3_mem,$apm4_cpu,$apm4_mem,$apm5_cpu,$apm5_mem,$apm6_cpu,$apm6_mem" >> process_metrics.csv
         sleep 5
     done &
 }
@@ -105,11 +109,11 @@ hard_disk_utilization(){
     echo "Testing the hard disk utilization ..."
 }
 
-# Compile and start the programs
+# Compile and start the programs.
 compile_programs
 start_programs
 
-# Get all of the data
+# Get all of the data.
 process_level_metrics &
 system_level_metrics &
 network_bandwidth_utilization &
