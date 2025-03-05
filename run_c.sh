@@ -56,7 +56,7 @@ process_level_metrics(){
     while true; do
         # Since this while loop runs every 5 seconds, elapsed time be += 5 every time.
         current_time=$(date +%s)
-        elapsed_time=(($current_time - $start_time))
+        elapsed_time=$(($current_time - $start_time))
 
         apm1_cpu=$(ps -p $BANDWIDTH_PID -o %cpu=)
         apm1_mem=$(ps -p $BANDWIDTH_PID -o %mem=)
