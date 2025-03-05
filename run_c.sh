@@ -9,8 +9,8 @@ cleanup() {
 trap cleanup EXIT
 
 # Compile c programs
-gcc bandwidth_hog.c -o bandwidth_hog
-gcc bandwidth_hog_burst.c -o bandwidth_hog_burst
+gcc bandwidth_hog.c 127.0.0.1  -o bandwidth_hog
+gcc bandwidth_hog_burst.c 127.0.0.1 -o bandwidth_hog_burst
 gcc cpu_hog.c -o cpu_hog
 gcc disk_hog.c -o disk_hog
 gcc memory_hog.c -o memory_hog
