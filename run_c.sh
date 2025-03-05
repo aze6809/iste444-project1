@@ -41,6 +41,8 @@ start_programs(){
 
     ./memory_hog_leak 127.0.0.1 &
     LEAK_PID=$!
+
+    echo $BANDWIDTH_PID
 }
 
 process_level_metrics(){
@@ -74,6 +76,7 @@ process_level_metrics(){
         apm6_cpu=$(ps -p $LEAK_PID -o %cpu=)
         apm6_mem=$(ps -p $LEAK_PID -o %mem=)
 
+        # Append to the csv
         echo "$elapsed_time,$apm1_cpu,$apm1_mem,$apm2_cpu,$apm2_mem,$apm3_cpu,$apm3_mem,$apm4_cpu,$apm4_mem,$apm5_cpu,$apm5_mem,$apm6_cpu,$apm6_mem" >> process_metrics.csv
         sleep 5
     done &
