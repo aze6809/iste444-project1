@@ -23,26 +23,32 @@ compile_programs(){
 # Start all of the files in the background
 start_programs(){
     echo "Starting Programs ..."
+    echo ""
 
     ./bandwidth_hog 8.8.8.8  &
     BANDWIDTH_PID=$!
+    echo "bandwidth_hog : $BANDWIDTH_PID"
 
     ./bandwidth_hog_burst 8.8.8.8  &
     BURST_PID=$!
+    echo "bandwidth_hog_burst : $BURST_PID"
 
     ./cpu_hog 8.8.8.8 &
     CPU_PID=$!
+    echo "cpu_hop : $CPU_PID"
 
     ./disk_hog 8.8.8.8 &
     DISK_PID=$!
+    echo "disk_hop : $DISK_PID"
 
     ./memory_hog 8.8.8.8 &
     MEMORY_PID=$!
+    echo "memory_hog : $MEMORY_PID"
 
     ./memory_hog_leak 8.8.8.8 &
     LEAK_PID=$!
-
-    echo $BANDWIDTH_PID
+    echo "memory_hog_leak : $LEAK_PID"
+    echo ""
 }
 
 process_level_metrics(){
@@ -109,5 +115,7 @@ network_bandwidth_utilization &
 hard_disk_access_rates &
 hard_disk_utilization &
 
+sleep 3
+echo ""
 echo "Monitoring started. Press Ctrl+C to stop."
 wait
