@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # Closes all of the running programs that are running
-finish() {
+cleanup() {
     echo "Cleaning up..."
     kill $BANDWIDTH_PID $BURST_PID $CPU_PID $DISK_PID $MEMORY_PID $LEAK_PID 2>/dev/null
     exit 0
 }
-trap finish EXIT
+trap cleanup EXIT
 
 # Compile c programs
 gcc bandwidth_hog.c -o bandwidth_hog
