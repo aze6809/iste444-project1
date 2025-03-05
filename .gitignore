@@ -7,5 +7,5 @@ memory_hog_leak
 *.o
 a.out
 
-cleanup.sh
-init.sh
+# cleanup.sh
+# init.sh
