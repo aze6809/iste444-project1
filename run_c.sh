@@ -24,22 +24,22 @@ compile_programs(){
 start_programs(){
     echo "Starting Programs ..."
 
-    ./bandwidth_hog 127.0.0.1  &
+    ./bandwidth_hog 8.8.8.8  &
     BANDWIDTH_PID=$!
 
-    ./bandwidth_hog_burst 127.0.0.1  &
+    ./bandwidth_hog_burst 8.8.8.8  &
     BURST_PID=$!
 
-    ./cpu_hog 127.0.0.1 &
+    ./cpu_hog 8.8.8.8 &
     CPU_PID=$!
 
-    ./disk_hog 127.0.0.1 &
+    ./disk_hog 8.8.8.8 &
     DISK_PID=$!
 
-    ./memory_hog 127.0.0.1 &
+    ./memory_hog 8.8.8.8 &
     MEMORY_PID=$!
 
-    ./memory_hog_leak 127.0.0.1 &
+    ./memory_hog_leak 8.8.8.8 &
     LEAK_PID=$!
 
     echo $BANDWIDTH_PID
