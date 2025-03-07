@@ -1,14 +1,17 @@
 #!/bin/bash
 
-#!/bin/bash
 echo "Monitoring started. Press Ctrl+C to stop."
 hard_disk_access_rates(){
-    iostat sda | awk '{print $1, $3}'
-    iostat mapper/rl-root
-    #iostat -d | awk 'NR>3 {sum += $3} END {print sum}'
+    iostat /dev/mapper/rl-root | awk '{print $1, $3}'
+	#df /
+
 }
 
 end_time=$((SECONDS + 30))
+
+gcc disk_hog.c -o disk_hog
+
+./disk_hog 8.8.8.8 & DISK_PID=$!
 
 while [ $SECONDS -lt $end_time ]; do
     hard_disk_access_rates
@@ -47,4 +50,3 @@ echo "Finished executing after 30 seconds."
     #     count=$(( count + 1 ))
     #     sleep 5
     # done
-
