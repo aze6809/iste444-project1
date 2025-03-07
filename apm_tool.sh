@@ -135,7 +135,27 @@ system_level_metrics() {
 }
 
 network_bandwidth_utilization() {
-    echo "Testing the network bandwidth utilization ..."
+    echo "Collecting network bandwidth utilization using ifstat ..."
+
+    # Find the correct `ens<ID>` interface
+    NETWORK_IFACE=$(ip -o link show | awk -F': ' '/ens[0-9]+/{print $2; exit}')
+
+    if [[ -z "$NETWORK_IFACE" ]]; then
+        echo "Error: No ens<ID> interface found. Exiting..."
+        exit 1
+    fi
+
+    echo "Using network interface: $NETWORK_IFACE"
+
+    # Display the computer's IP address and the gateway IP
+    COMPUTER_IP=$(ip -o -4 addr show "$NETWORK_IFACE" | awk '{print $4}' | cut -d'/' -f1)
+    GATEWAY_IP=$(ip route | awk '/default/ {print $3}')
+
+    echo "Computer IP: $COMPUTER_IP"
+    echo "Gateway IP: $GATEWAY_IP"
+
+    # Start ifstat for real-time monitoring on the chosen interface
+    ifstat -i "$NETWORK_IFACE"
 }
 
 hard_disk_access_rates() {
