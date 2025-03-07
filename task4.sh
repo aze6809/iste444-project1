@@ -2,7 +2,7 @@
 
 echo "Monitoring started. Press Ctrl+C to stop."
 hard_disk_access_rates(){
-    iostat /dev/mapper/rl-root | awk '{print $1, $3}'
+    iostat /dev/mapper/rl-root | awk 'NR>6{print $6}'
 	#df /
 
 }
