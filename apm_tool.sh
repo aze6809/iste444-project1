@@ -53,7 +53,8 @@ start_programs(){
 }
 
 process_level_metrics(){
-    echo "Getting the process level metrics ..."
+    elapsed_time=$1
+    echo "Getting the process level metrics ... Time passed : $1"
 
     # Get the cpu and mem used for each process with the process id and append to the csv.
     apm1_cpu=$(ps -p $BANDWIDTH_PID -o %cpu=)
@@ -82,7 +83,8 @@ process_level_metrics(){
 }
 
 system_level_metrics() {
-    echo ""Getting the system level metrics ...""
+    elapsed_time=$1
+    echo "Getting the system level metrics ... Time passed : $1"
 }
 
 network_bandwidth_utilization(){
@@ -108,8 +110,8 @@ get_metrics_loop() {
         passOnSeconds=$((count * 5))
     
         # call your functions to do the metrics
-        process_level_metrics
-        system_level_metrics
+        process_level_metrics $(($count * 5))
+        system_level_metrics $(($count * 5))
       
         # seconds is count * 5
         count=$(( count + 1 ))
