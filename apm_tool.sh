@@ -82,7 +82,7 @@ process_level_metrics(){
 }
 
 system_level_metrics() {
-
+    echo ""Getting the system level metrics ...""
 }
 
 network_bandwidth_utilization(){
@@ -109,7 +109,7 @@ get_metrics_loop() {
     
         # call your functions to do the metrics
         process_level_metrics
-        # system_level_metrics
+        system_level_metrics
       
         # seconds is count * 5
         count=$(( count + 1 ))
