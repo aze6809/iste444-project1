@@ -93,12 +93,16 @@ system_level_metrics() {
     fi
 
     # Collect network bandwidth utilization (kB/s)
-    ifstat_output=$(ifstat "$NETWORK_IFACE" 1 1 | awk 'NR==3 {print $1, $2}')
+    ifstat_output=$(ifstat "$NETWORK_IFACE" 1 1 | awk 'NR==4 {print $6, $8}')
     rx_rate=$(echo "$ifstat_output" | awk '{print $1}')
     tx_rate=$(echo "$ifstat_output" | awk '{print $2}')
 
+    # Convert bytes to kilobytes
+    rx_rate=$(echo "scale=2; $rx_bytes / 1024" | bc)
+    tx_rate=$(echo "scale=2; $tx_bytes / 1024" | bc)
+
     # Collect disk writes (kB/s)
-    disk_writes=$(iostat /dev/mapper/rl-root | awk 'NR>6 {print $3}')
+    disk_writes=$(iostat -d /dev/mapper/rl-root | awk 'NR>3 {print $4}')
 
     # Collect available disk capacity (MB)
     available_disk=$(df -m / | awk 'NR==2 {print $4}')
