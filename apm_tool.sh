@@ -93,7 +93,7 @@ system_level_metrics() {
     fi
 
     # Collect network bandwidth utilization (kB/s)
-    ifstat_output=$(ifstat -i "$NETWORK_IFACE" 1 1 | awk 'NR==3 {print $1, $2}')
+    ifstat_output=$(ifstat "$NETWORK_IFACE" 1 1 | awk 'NR==3 {print $1, $2}')
     rx_rate=$(echo "$ifstat_output" | awk '{print $1}')
     tx_rate=$(echo "$ifstat_output" | awk '{print $2}')
 
