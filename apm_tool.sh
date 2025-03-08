@@ -166,6 +166,7 @@ get_metrics_loop() {
     do
         # calculate seconds to pass on 
         passOnSeconds=$((count * 5))
+        echo ""
         echo "Time Elapsed: $((count * 5)) seconds"
 
         # call your functions to do the metrics
