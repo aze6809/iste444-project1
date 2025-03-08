@@ -84,22 +84,23 @@ init_system_level_metrics() {
 
 system_level_metrics() {
     elapsed_time=$1
+
+    # Find the network interface
     NETWORK_IFACE=$(ip -o link show | awk -F': ' '/ens[0-9]+/{print $2; exit}')
     if [[ -z "$NETWORK_IFACE" ]]; then
         echo "Error: No ens<ID> interface found. Exiting..."
         exit 1
     fi
 
-    # Network bandwidth utilization (kB/s)
-    ifstat -T 1 1 -i "$NETWORK_IFACE" | awk -v iface="$NETWORK_IFACE" 'NR>2 {print $2, $4}' | while read rx tx; do
-        rx_rate=$rx
-        tx_rate=$tx
-    done
+    # Collect network bandwidth utilization (kB/s)
+    ifstat_output=$(ifstat -t -i "$NETWORK_IFACE" 1 1 | awk 'NR>2 {print $1, $2}')
+    rx_rate=$(echo "$ifstat_output" | awk '{print $1}')
+    tx_rate=$(echo "$ifstat_output" | awk '{print $2}')
 
-    # Disk writes (kB/s)
+    # Collect disk writes (kB/s)
     disk_writes=$(iostat -d /dev/mapper/rl-root | awk 'NR>3 {print $3}')
 
-    # Available disk capacity (MB)
+    # Collect available disk capacity (MB)
     available_disk=$(df -m / | awk 'NR==2 {print $4}')
 
     # Write to CSV file
