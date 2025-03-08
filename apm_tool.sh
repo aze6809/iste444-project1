@@ -80,47 +80,42 @@ process_level_metrics(){
     apm6_cpu=$(ps -p $LEAK_PID -o %cpu=)
     apm6_mem=$(ps -p $LEAK_PID -o %mem=)
     echo "$elapsed_time,$apm6_cpu,$apm6_mem" >> memory_hog_leak_metrics.csv
+}
 
-system_level_metrics() {
+init_system_level_metrics(){
     echo "Collecting system-level metrics ..."
 
     # Initialize CSV file
     echo "seconds,RX data rate,TX data rate,disk writes,available disk capacity" >system_metrics.csv
 
-    # Get start time for elapsed time tracking
-    start_time=$(date +%s)
-
     # Get initial network statistics
     prev_rx=$(awk '/eth0|wlan0/ {print $2}' /proc/net/dev | paste -sd+ - | bc)
     prev_tx=$(awk '/eth0|wlan0/ {print $10}' /proc/net/dev | paste -sd+ - | bc)
+}
 
-    while true; do
-        sleep 5
+system_level_metrics() {
+    elapsed_time=$1
 
-        current_time=$(date +%s)
-        elapsed_time=$((current_time - start_time))
+    # Get current network stats
+    curr_rx=$(awk '/eth0|wlan0/ {print $2}' /proc/net/dev | paste -sd+ - | bc)
+    curr_tx=$(awk '/eth0|wlan0/ {print $10}' /proc/net/dev | paste -sd+ - | bc)
 
-        # Get current network stats
-        curr_rx=$(awk '/eth0|wlan0/ {print $2}' /proc/net/dev | paste -sd+ - | bc)
-        curr_tx=$(awk '/eth0|wlan0/ {print $10}' /proc/net/dev | paste -sd+ - | bc)
+    # Calculate RX and TX rates (bytes per second)
+    rx_rate=$(((curr_rx - prev_rx) / 5))
+    tx_rate=$(((curr_tx - prev_tx) / 5))
 
-        # Calculate RX and TX rates (bytes per second)
-        rx_rate=$(((curr_rx - prev_rx) / 5))
-        tx_rate=$(((curr_tx - prev_tx) / 5))
+    # Update previous values
+    prev_rx=$curr_rx
+    prev_tx=$curr_tx
 
-        # Update previous values
-        prev_rx=$curr_rx
-        prev_tx=$curr_tx
+    # Get disk writes
+    disk_writes=$(iostat -d | awk 'NR>3 {sum += $3} END {print sum}')
 
-        # Get disk writes
-        disk_writes=$(iostat -d | awk 'NR>3 {sum += $3} END {print sum}')
+    # Get available disk capacity
+    available_disk=$(df -h / | awk 'NR==2 {print $4}')
 
-        # Get available disk capacity
-        available_disk=$(df -h / | awk 'NR==2 {print $4}')
-
-        # Write to CSV file
-        echo "$elapsed_time,$rx_rate,$tx_rate,$disk_writes,$available_disk" >>system_metrics.csv
-    done &
+    # Write to CSV file
+    echo "$elapsed_time,$rx_rate,$tx_rate,$disk_writes,$available_disk" >>system_metrics.csv
 }
 
 network_bandwidth_utilization() {
@@ -140,14 +135,19 @@ get_metrics_loop() {
     local minutes=$1
     loopEnd=$(( $minutes * 12 )) #  (minutes) * 60 / 5 second intervals 
     count=0
+    init_system_level_metrics
+
     while [ $count -le $loopEnd ] 
     do
         # calculate seconds to pass on 
         passOnSeconds=$((count * 5))
     
         # call your functions to do the metrics
-        process_level_metrics $(($count * 5))
-        system_level_metrics $(($count * 5))
+        process_level_metrics $(($count * 5)) &
+        system_level_metrics $(($count * 5)) &
+        network_bandwidth_utilization &
+        hard_disk_access_rates &
+        hard_disk_utilization &
       
         # seconds is count * 5
         count=$(( count + 1 ))
@@ -159,13 +159,7 @@ get_metrics_loop() {
 compile_programs
 start_programs
 
-# Get all of the data.
-# process_level_metrics &
-# system_level_metrics &
-get_metrics_loop 2 &
-network_bandwidth_utilization &
-hard_disk_access_rates &
-hard_disk_utilization &
+get_metrics_loop 2
 
 sleep 1
 echo ""
