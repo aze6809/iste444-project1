@@ -51,6 +51,14 @@ start_programs() {
     echo "memory_hog_leak : $LEAK_PID"
     echo ""
 }
+./trial-run/
+init_process_level_metrics(){
+    echo "seconds,CPU,memory" >./trial-run/bandwidth_hog_metrics.csv
+    echo "seconds,CPU,memory" >./trial-run/bandwidth_hog_burst_metrics.csv
+    echo "seconds,CPU,memory" >./trial-run/cpu_hog_metrics.csv
+    echo "seconds,CPU,memory" >./trial-run/disk_hog_metrics.csv
+    echo "seconds,CPU,memory" >./trial-run/memory_hog_metrics.csv
+}
 
 process_level_metrics(){
     elapsed_time=$1
@@ -58,46 +66,34 @@ process_level_metrics(){
     # Get the cpu and mem used for each process with the process id and append to the csv.
     apm1_cpu=$(ps -p $BANDWIDTH_PID -o %cpu=)
     apm1_mem=$(ps -p $BANDWIDTH_PID -o %mem=)
-
-    echo "seconds,CPU,memory" >bandwidth_hog_metrics.csv
-    echo "$elapsed_time,$apm1_cpu,$apm1_mem" >> bandwidth_hog_metrics.csv
+    echo "$elapsed_time,$apm1_cpu,$apm1_mem" >> ./trial-run/bandwidth_hog_metrics.csv
 
     apm2_cpu=$(ps -p $BURST_PID -o %cpu=)
     apm2_mem=$(ps -p $BURST_PID -o %mem=)
-
-    echo "seconds,CPU,memory" >bandwidth_hog_burst_metrics.csv
-    echo "$elapsed_time,$apm2_cpu,$apm2_mem" >> bandwidth_hog_burst_metrics.csv
+    echo "$elapsed_time,$apm2_cpu,$apm2_mem" >> ./trial-run/bandwidth_hog_burst_metrics.csv
 
     apm3_cpu=$(ps -p $CPU_PID -o %cpu=)
     apm3_mem=$(ps -p $CPU_PID -o %mem=)
-
-    echo "seconds,CPU,memory" >cpu_hog_metrics.csv
-    echo "$elapsed_time,$apm3_cpu,$apm3_mem" >> cpu_hog_metrics.csv
+    echo "$elapsed_time,$apm3_cpu,$apm3_mem" >> ./trial-run/cpu_hog_metrics.csv
 
     apm4_cpu=$(ps -p $DISK_PID -o %cpu=)
     apm4_mem=$(ps -p $DISK_PID -o %mem=)
-
-    echo "seconds,CPU,memory" >disk_hog_metrics.csv
-    echo "$elapsed_time,$apm4_cpu,$apm4_mem" >> disk_hog_metrics.csv
+    echo "$elapsed_time,$apm4_cpu,$apm4_mem" >> ./trial-run/disk_hog_metrics.csv
 
     apm5_cpu=$(ps -p $MEMORY_PID -o %cpu=)
     apm5_mem=$(ps -p $MEMORY_PID -o %mem=)
-
-    echo "seconds,CPU,memory" >memory_hog_metrics.csv
-    echo "$elapsed_time,$apm5_cpu,$apm5_mem" >> memory_hog_metrics.csv
+    echo "$elapsed_time,$apm5_cpu,$apm5_mem" >> ./trial-run/memory_hog_metrics.csv
 
     apm6_cpu=$(ps -p $LEAK_PID -o %cpu=)
     apm6_mem=$(ps -p $LEAK_PID -o %mem=)
-
-    echo "seconds,CPU,memory" >memory_hog_leak_metrics.csv
-    echo "$elapsed_time,$apm6_cpu,$apm6_mem" >> memory_hog_leak_metrics.csv
+    echo "$elapsed_time,$apm6_cpu,$apm6_mem" >> ./trial-run/memory_hog_leak_metrics.csv
 }
 
 init_system_level_metrics(){
     echo "Collecting system-level metrics ..."
 
     # Initialize CSV file
-    echo "seconds,RX data rate,TX data rate,disk writes,available disk capacity" >system_metrics.csv
+    echo "seconds,RX data rate,TX data rate,disk writes,available disk capacity" >./trial-run/system_metrics.csv
 
     # Get initial network statistics
     prev_rx=$(awk '/eth0|wlan0/ {print $2}' /proc/net/dev | paste -sd+ - | bc)
@@ -126,7 +122,7 @@ system_level_metrics() {
     available_disk=$(df -h / | awk 'NR==2 {print $4}')
 
     # Write to CSV file
-    echo "$elapsed_time,$rx_rate,$tx_rate,$disk_writes,$available_disk" >>system_metrics.csv
+    echo "$elapsed_time,$rx_rate,$tx_rate,$disk_writes,$available_disk" >>./trial-run/system_metrics.csv
 }
 
 network_bandwidth_utilization() {
@@ -201,6 +197,4 @@ start_programs
 echo ""
 echo "Monitoring started. Press Ctrl+C to stop."
 
-get_metrics_loop 15 
-
-wait
+get_metrics_loop 1
