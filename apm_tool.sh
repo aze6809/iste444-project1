@@ -82,7 +82,7 @@ init_system_level_metrics() {
     echo "seconds,RX data rate,TX data rate,disk writes,available disk capacity" >trial-run/system_metrics.csv
 }
 
-system_level_metrics() {
+ssystem_level_metrics() {
     elapsed_time=$1
 
     # Find the network interface
@@ -94,8 +94,8 @@ system_level_metrics() {
 
     # Collect network bandwidth utilization (kB/s)
     ifstat_output=$(ifstat "$NETWORK_IFACE" 1 1 | awk 'NR==4 {print $6, $8}')
-    rx_rate=$(echo "$ifstat_output" | awk '{print $1}')
-    tx_rate=$(echo "$ifstat_output" | awk '{print $2}')
+    rx_bytes=$(echo "$ifstat_output" | awk '{print $1}')
+    tx_bytes=$(echo "$ifstat_output" | awk '{print $2}')
 
     # Convert bytes to kilobytes
     rx_rate=$(echo "scale=2; $rx_bytes / 1024" | bc)
