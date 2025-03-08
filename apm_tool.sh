@@ -98,7 +98,7 @@ system_level_metrics() {
     tx_rate=$(echo "$ifstat_output" | awk '{print $2}')
 
     # Collect disk writes (kB/s)
-    disk_writes=$(iostat -d /dev/mapper/rl-root | awk 'NR>6 {print $3}')
+    disk_writes=$(iostat /dev/mapper/rl-root | awk 'NR>6 {print $3}')
 
     # Collect available disk capacity (MB)
     available_disk=$(df -m / | awk 'NR==2 {print $4}')
