@@ -82,7 +82,7 @@ init_system_level_metrics() {
     echo "seconds,RX data rate,TX data rate,disk writes,available disk capacity" >trial-run/system_metrics.csv
 }
 
-ssystem_level_metrics() {
+system_level_metrics() {
     elapsed_time=$1
 
     # Find the network interface
