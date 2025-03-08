@@ -54,30 +54,42 @@ start_programs() {
 
 process_level_metrics(){
     elapsed_time=$1
-
+ 
     # Get the cpu and mem used for each process with the process id and append to the csv.
     apm1_cpu=$(ps -p $BANDWIDTH_PID -o %cpu=)
     apm1_mem=$(ps -p $BANDWIDTH_PID -o %mem=)
+
+    echo "seconds, APM 1 cpu, APM 1 memory" >bandwidth_hog_metrics.csv
     echo "$elapsed_time,$apm1_cpu,$apm1_mem" >> bandwidth_hog_metrics.csv
 
     apm2_cpu=$(ps -p $BURST_PID -o %cpu=)
     apm2_mem=$(ps -p $BURST_PID -o %mem=)
+
+    echo "seconds, APM 2 cpu, APM 2 memory" >bandwidth_hog_burst_metrics.csv
     echo "$elapsed_time,$apm2_cpu,$apm2_mem" >> bandwidth_hog_burst_metrics.csv
 
     apm3_cpu=$(ps -p $CPU_PID -o %cpu=)
     apm3_mem=$(ps -p $CPU_PID -o %mem=)
+
+    echo "seconds, APM 3 cpu, APM 3 memory" >cpu_hog_metrics.csv
     echo "$elapsed_time,$apm3_cpu,$apm3_mem" >> cpu_hog_metrics.csv
 
     apm4_cpu=$(ps -p $DISK_PID -o %cpu=)
     apm4_mem=$(ps -p $DISK_PID -o %mem=)
+
+    echo "seconds, APM 4 cpu, APM 4 memory" >disk_hog_metrics.csv
     echo "$elapsed_time,$apm4_cpu,$apm4_mem" >> disk_hog_metrics.csv
 
     apm5_cpu=$(ps -p $MEMORY_PID -o %cpu=)
     apm5_mem=$(ps -p $MEMORY_PID -o %mem=)
+
+    echo "seconds, APM 5 cpu, APM 5 memory" >memory_hog_metrics.csv
     echo "$elapsed_time,$apm5_cpu,$apm5_mem" >> memory_hog_metrics.csv
 
     apm6_cpu=$(ps -p $LEAK_PID -o %cpu=)
     apm6_mem=$(ps -p $LEAK_PID -o %mem=)
+
+    echo "seconds, APM 6 cpu, APM 6 memory" >memory_hog_leak_metrics.csv
     echo "$elapsed_time,$apm6_cpu,$apm6_mem" >> memory_hog_leak_metrics.csv
 }
 
