@@ -123,10 +123,14 @@ network_bandwidth_utilization() {
 
 hard_disk_access_rates() {
     echo "Getting access rates ..."
+    #Gets JUST the kB_wrtn/s value for the main device
+    kb_written=$(iostat /dev/mapper/rl-root | awk 'NR>6{print $6}')
 }
 
 hard_disk_utilization() {
     echo "Testing the hard disk utilization ..."
+    #Gets JUST the amount of space left available on the disk
+    disk_use=$(df / | awk 'NR>1{print $4}')
 }
 
 get_metrics_loop() {
