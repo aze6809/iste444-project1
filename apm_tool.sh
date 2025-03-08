@@ -143,11 +143,11 @@ get_metrics_loop() {
         passOnSeconds=$((count * 5))
     
         # call your functions to do the metrics
-        process_level_metrics $(($count * 5)) &
-        system_level_metrics $(($count * 5)) &
-        network_bandwidth_utilization &
-        hard_disk_access_rates &
-        hard_disk_utilization &
+        process_level_metrics $(($count * 5)) 
+        system_level_metrics $(($count * 5)) 
+        network_bandwidth_utilization 
+        hard_disk_access_rates 
+        hard_disk_utilization 
       
         # seconds is count * 5
         count=$(( count + 1 ))
@@ -159,7 +159,7 @@ get_metrics_loop() {
 compile_programs
 start_programs
 
-get_metrics_loop 2
+get_metrics_loop 2 &
 
 sleep 1
 echo ""
