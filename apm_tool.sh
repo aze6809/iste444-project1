@@ -146,7 +146,8 @@ get_metrics_loop() {
     do
         # calculate seconds to pass on 
         passOnSeconds=$((count * 5))
-    
+        echo "Time Elapsed: $((count * 5)) seconds"
+
         # call your functions to do the metrics
         process_level_metrics $(($count * 5)) 
         system_level_metrics $(($count * 5)) 
@@ -164,9 +165,9 @@ get_metrics_loop() {
 compile_programs
 start_programs
 
-get_metrics_loop 2 &
-
-sleep 1
 echo ""
 echo "Monitoring started. Press Ctrl+C to stop."
+
+get_metrics_loop 2
+
 wait
