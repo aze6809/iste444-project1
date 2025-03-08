@@ -125,12 +125,14 @@ hard_disk_access_rates() {
     echo "Getting access rates ..."
     #Gets JUST the kB_wrtn/s value for the main device
     kb_written=$(iostat /dev/mapper/rl-root | awk 'NR>6{print $6}')
+    echo "kB written to hard disk per second $kb_written"
 }
 
 hard_disk_utilization() {
     echo "Testing the hard disk utilization ..."
     #Gets JUST the amount of space left available on the disk
     disk_use=$(df / | awk 'NR>1{print $4}')
+    echo "Hard disk utilization: $disk_use"
 }
 
 get_metrics_loop() {
