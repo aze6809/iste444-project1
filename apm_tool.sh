@@ -26,27 +26,27 @@ start_programs() {
     echo "Starting Programs ..."
     echo ""
 
-    bandwidth_hog 8.8.8.8 &
+    ./bandwidth_hog 8.8.8.8 &
     BANDWIDTH_PID=$!
     echo "bandwidth_hog : $BANDWIDTH_PID"
 
-    bandwidth_hog_burst 8.8.8.8 &
+    ./bandwidth_hog_burst 8.8.8.8 &
     BURST_PID=$!
     echo "bandwidth_hog_burst : $BURST_PID"
 
-    cpu_hog 8.8.8.8 &
+    ./cpu_hog 8.8.8.8 &
     CPU_PID=$!
     echo "cpu_hog : $CPU_PID"
 
-    disk_hog 8.8.8.8 &
+    ./disk_hog 8.8.8.8 &
     DISK_PID=$!
     echo "disk_hog : $DISK_PID"
 
-    memory_hog 8.8.8.8 &
+    ./memory_hog 8.8.8.8 &
     MEMORY_PID=$!
     echo "memory_hog : $MEMORY_PID"
 
-    memory_hog_leak 8.8.8.8 &
+    ./memory_hog_leak 8.8.8.8 &
     LEAK_PID=$!
     echo "memory_hog_leak : $LEAK_PID"
     echo ""
@@ -54,6 +54,8 @@ start_programs() {
 
 init_process_level_metrics(){
     echo "Collecting process-level metrics ..."
+
+    mkdir -p trial-run
 
     echo "seconds,CPU,memory" >trial-run/bandwidth_hog_metrics.csv
     echo "seconds,CPU,memory" >trial-run/bandwidth_hog_burst_metrics.csv
@@ -93,6 +95,8 @@ process_level_metrics(){
 
 init_system_level_metrics(){
     echo "Collecting system-level metrics ..."
+
+    mkdir -p trial-run
 
     # Initialize CSV file
     echo "seconds,RX data rate,TX data rate,disk writes,available disk capacity" >trial-run/system_metrics.csv
