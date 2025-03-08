@@ -53,6 +53,8 @@ start_programs() {
 }
 
 init_process_level_metrics(){
+    echo "Collecting process-level metrics ..."
+
     echo "seconds,CPU,memory" >trial-run/bandwidth_hog_metrics.csv
     echo "seconds,CPU,memory" >trial-run/bandwidth_hog_burst_metrics.csv
     echo "seconds,CPU,memory" >trial-run/cpu_hog_metrics.csv
@@ -168,6 +170,7 @@ get_metrics_loop() {
     local minutes=$1
     loopEnd=$(( $minutes * 12 )) #  (minutes) * 60 / 5 second intervals 
     count=0
+    init_process_level_metrics
     init_system_level_metrics
 
     while [ $count -le $loopEnd ] 
