@@ -155,7 +155,7 @@ network_bandwidth_utilization() {
     echo "Gateway IP: $GATEWAY_IP"
 
     # Start ifstat for real-time monitoring on the chosen interface
-    ifstat -i "$NETWORK_IFACE"
+    ifstat "$NETWORK_IFACE"
 }
 
 hard_disk_access_rates() {
