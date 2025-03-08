@@ -204,4 +204,4 @@ start_programs
 echo ""
 echo "Monitoring started. Press Ctrl+C to stop."
 
-get_metrics_loop 1
+get_metrics_loop 15
